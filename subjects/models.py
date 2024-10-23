@@ -4,10 +4,13 @@ from .choices import SUBJECT_LEVEL_CHOICES
 from django.db.models import Q
 from users.models import User
 
+
 class Subject(models.Model):
     name = models.CharField(max_length=100, unique=True)
     number_credits = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    semester = models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(1)])
+    semester = models.PositiveIntegerField(
+        blank=True, null=True, validators=[MinValueValidator(1)]
+    )
 
     level = models.CharField(
         choices=SUBJECT_LEVEL_CHOICES,
@@ -19,7 +22,9 @@ class Subject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    prerequisites = models.ManyToManyField('self', symmetrical=False, related_name='required_for', blank=True, null=True)
+    prerequisites = models.ManyToManyField(
+        "self", symmetrical=False, related_name="required_for", blank=True
+    )
 
     created_by = models.ForeignKey(
         User,
