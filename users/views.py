@@ -8,6 +8,10 @@ from rest_framework.generics import (
 
 
 class ListUsersView(ListAPIView, CreateAPIView):
+    """
+    Get all users or create a new user
+    """
+
     allowed_methods = ["GET", "POST"]
     serializer_class = UserSerializer
     queryset = User.objects.all()

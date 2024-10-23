@@ -1,9 +1,8 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+from .viewsets import UserViewSet
 
-from .views import ListUsersView, DetailUserView
+router = DefaultRouter()
+router.register("users", UserViewSet)
 
-
-urlpatterns = [
-    path("", view=ListUsersView.as_view()),
-    path("<int:user_id>/", view=DetailUserView.as_view()),
-]
+urlpatterns = router.urls
