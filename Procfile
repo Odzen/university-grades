@@ -1,0 +1,1 @@
+web: gunicorn universitygrades.wsgi --log-file -
