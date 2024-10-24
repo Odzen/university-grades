@@ -5,11 +5,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from .choices import USER_ROLE_CHOICES, USER_TYPE_CHOICES
-from .managers import UserManager
 
 
 class User(AbstractUser):
     email = models.EmailField(verbose_name="Email address", unique=True)
+    username = None
 
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -19,7 +19,7 @@ class User(AbstractUser):
         verbose_name="User role",
         default="USER",
     )
-    
+
     type = models.CharField(
         choices=USER_TYPE_CHOICES,
         max_length=100,
@@ -35,10 +35,13 @@ class User(AbstractUser):
         limit_choices_to={"type": "ADMIN"},
     )
 
-    objects = UserManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
     class Meta:
-        swappable = "AUTH_USER_MODEL"
         ordering = ["first_name", "last_name"]
 
     def __str__(self):
