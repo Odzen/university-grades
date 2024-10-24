@@ -149,3 +149,10 @@ from datetime import timedelta
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
 }
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'University Grades API',
+    'DESCRIPTION': 'API for managing university grades and enrollments to courses',
+    'VERSION': '1.0.0',
+}
