@@ -1,16 +1,16 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from .choices import SUBJECT_LEVEL_CHOICES
-from django.db.models import Q
 from users.models import User
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    number_credits = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    name = models.CharField(max_length=100)
+    number_credits = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     semester = models.PositiveIntegerField(
-        blank=True, null=True, validators=[MinValueValidator(1)]
+        blank=True, null=True, validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
+    program = models.CharField(max_length=100)
 
     level = models.CharField(
         choices=SUBJECT_LEVEL_CHOICES,
@@ -31,12 +31,12 @@ class Subject(models.Model):
         max_length=10,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="created_subjects",
-        limit_choices_to=Q(role="ADMIN") | Q(role="USER", type="TEACHER"),
+        related_name="created_subjects"
     )
 
     class Meta:
         ordering = ["-created_at", "name"]
+        unique_together = ('name', 'program', 'level')
 
     def __str__(self):
         return self.name

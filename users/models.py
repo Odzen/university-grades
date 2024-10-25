@@ -11,8 +11,6 @@ class User(AbstractUser):
     email = models.EmailField(verbose_name="Email address", unique=True)
     username = None
 
-    updated_at = models.DateTimeField(auto_now=True)
-
     role = models.CharField(
         choices=USER_ROLE_CHOICES,
         max_length=100,
@@ -31,8 +29,7 @@ class User(AbstractUser):
         "self",
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        limit_choices_to={"type": "ADMIN"},
+        blank=True
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -42,7 +39,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-        ordering = ["first_name", "last_name"]
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.get_full_name()
@@ -56,9 +53,5 @@ class User(AbstractUser):
             self.username = "".join(
                 random.choice(string.ascii_lowercase + string.digits) for _ in range(30)
             )
-
-        if not self.pk and self._state.adding:
-            if hasattr(kwargs, "request"):
-                self.created_by = kwargs["request"].user
 
         super(User, self).save(*args, **kwargs)

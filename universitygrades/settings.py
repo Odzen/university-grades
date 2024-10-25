@@ -39,11 +39,11 @@ INSTALLED_APPS = [
     "rest_framework",
     # external apps
     "drf_spectacular",
+    "django_filters",
     # project apps
     "courses",
     "subjects",
     "users",
-    "docs",
 ]
 
 MIDDLEWARE = [
@@ -91,7 +91,7 @@ DATABASES = {
 DATABASES = {
     'default': dj_database_url.config(
         conn_max_age=600,
-        conn_health_checks=True,
+        conn_health_checks=True
     ),
 }
 
@@ -142,6 +142,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 from datetime import timedelta
@@ -155,4 +157,11 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'University Grades API',
     'DESCRIPTION': 'API for managing university grades and enrollments to courses',
     'VERSION': '1.0.0',
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'docExpansion': 'none',
+    },
+    'EXCLUDE_PATHS': [
+        r'^/docs/.*',  # Updated to match any sub-paths under /docs/
+    ],
 }
