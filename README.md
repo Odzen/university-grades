@@ -13,6 +13,7 @@
 This project is a backend system for managing university grades using Django Rest Framework. The API supports both student, professor roles and administrator roles with features for course registration, grade tracking, and performance monitoring.
 
 ## Database Schema
+![db_diagram](https://github.com/user-attachments/assets/e361255f-3bf3-4bc7-bcda-df8d31e8c72c)
 
 
 ## Features
