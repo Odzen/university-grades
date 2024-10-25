@@ -64,6 +64,6 @@ If you use the production server and want to try the API, sign in with the follo
 The API documentation is available at `/docst/` at the root of the project. https://university-grades-460c6e848672.herokuapp.com/docs/ 
 
 ## Contact
-Email: jsebastian.va@gmail.com
-[LinkedIn](https://www.linkedin.com/in/juanvelasquezacevedo/)
+- Email: jsebastian.va@gmail.com
+- [LinkedIn](https://www.linkedin.com/in/juanvelasquezacevedo/)
 
