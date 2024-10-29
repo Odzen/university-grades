@@ -1,9 +1,9 @@
-from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models
 
-from .choices import COURSE_STATUS_CHOICES
 from subjects.models import Subject
 from users.models import User
+from .choices import COURSE_STATUS_CHOICES
 
 
 class Course(models.Model):
@@ -27,15 +27,17 @@ class Course(models.Model):
         max_length=10,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="assigned_courses"
+        related_name="assigned_courses",
     )
-    enrollments = models.ManyToManyField(User, max_length=10, through='Enrollment', related_name='courses')
+    enrollments = models.ManyToManyField(
+        User, max_length=10, through="Enrollment", related_name="courses"
+    )
     created_by = models.ForeignKey(
         User,
         max_length=10,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="created_courses"
+        related_name="created_courses",
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -57,12 +59,14 @@ class Course(models.Model):
 class Enrollment(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    overall_grade = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    overall_grade = models.FloatField(
+        null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('student', 'course')
+        unique_together = ("student", "course")
 
     def __str__(self):
-        return f'{self.student.email} enrolled in {self.course.name}'
+        return f"{self.student.email} enrolled in {self.course.name}"

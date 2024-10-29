@@ -1,12 +1,15 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from .choices import SUBJECT_LEVEL_CHOICES
+
 from users.models import User
+from .choices import SUBJECT_LEVEL_CHOICES
 
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    number_credits = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    number_credits = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
     semester = models.PositiveIntegerField(
         blank=True, null=True, validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
@@ -31,12 +34,12 @@ class Subject(models.Model):
         max_length=10,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="created_subjects"
+        related_name="created_subjects",
     )
 
     class Meta:
         ordering = ["-created_at", "name"]
-        unique_together = ('name', 'program', 'level')
+        unique_together = ("name", "program", "level")
 
     def __str__(self):
         return self.name

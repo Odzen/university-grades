@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Subject
+
 from courses.serializers import CourseSerializer
+from .models import Subject
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -13,4 +14,16 @@ class SubjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subject
-        fields = ["id", "name","number_credits","semester", "level", "program", "created_at", "updated_at", "created_by", "prerequisites", "courses"]
+        fields = [
+            "id",
+            "name",
+            "number_credits",
+            "semester",
+            "level",
+            "program",
+            "created_at",
+            "updated_at",
+            "created_by",
+            "prerequisites",
+            "courses",
+        ]

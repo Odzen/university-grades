@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 import os
-import dj_database_url
 from pathlib import Path
+
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,11 @@ SECRET_KEY = "django-insecure-3d45cm=cwpc-(+xw!g_cdkzpm+29jw8k-g838xnz$!j*g=(=3t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['university-grades-460c6e848672.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    "university-grades-460c6e848672.herokuapp.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -89,10 +95,7 @@ DATABASES = {
 
 
 DATABASES = {
-    'default': dj_database_url.config(
-        conn_max_age=600,
-        conn_health_checks=True
-    ),
+    "default": dj_database_url.config(conn_max_age=600, conn_health_checks=True),
 }
 
 # Password validation
@@ -129,7 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -142,8 +145,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 from datetime import timedelta
@@ -154,14 +157,14 @@ SIMPLE_JWT = {
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'University Grades API',
-    'DESCRIPTION': 'API for managing university grades and enrollments to courses',
-    'VERSION': '1.0.0',
-    'COMPONENT_SPLIT_REQUEST': True,
-    'SWAGGER_UI_SETTINGS': {
-        'docExpansion': 'none',
+    "TITLE": "University Grades API",
+    "DESCRIPTION": "API for managing university grades and enrollments to courses",
+    "VERSION": "1.0.0",
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SWAGGER_UI_SETTINGS": {
+        "docExpansion": "none",
     },
-    'EXCLUDE_PATHS': [
-        r'^/docs/.*',  # Updated to match any sub-paths under /docs/
+    "EXCLUDE_PATHS": [
+        r"^/docs/.*",  # Updated to match any sub-paths under /docs/
     ],
 }

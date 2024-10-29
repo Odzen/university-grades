@@ -1,55 +1,53 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import filters
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
 
-from courses.serializers import CourseSerializer
-from .serializers import SubjectSerializer
-from .models import Subject
-from users.permissions import IsAdmin
 from courses.filters import CourseFilter
+from courses.serializers import CourseSerializer
+from users.permissions import IsAdmin
+from .models import Subject
+from .serializers import SubjectSerializer
 
 
 @extend_schema_view(
     list=extend_schema(
         description="Returns a list of all the existing paginated Subjects with optional filters."
     ),
-    retrieve=extend_schema(
-        description="Returns a single Subject selected by `id`."
-    ),
+    retrieve=extend_schema(description="Returns a single Subject selected by `id`."),
     create=extend_schema(
         description="Create a new Subject. Only Admins can create Subjects."
     ),
-    partial_update=extend_schema(
-        description="Updates an existing Subject by `id`."
-    ),
-    destroy=extend_schema(
-        description="Deletes an existing Subject by `id`."
-    ),
+    partial_update=extend_schema(description="Updates an existing Subject by `id`."),
+    destroy=extend_schema(description="Deletes an existing Subject by `id`."),
     courses=extend_schema(
         description="Manage courses for a Subject. Use POST to add a course and GET to list all courses."
     ),
     prerequisites=extend_schema(
         description="Manage prerequisites for a Subject. Use POST to add a prerequisite, DELETE to remove one and GET to list all prerequisites.",
-    )
+    ),
 )
 class SubjectViewSet(viewsets.ModelViewSet):
 
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
 
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ["get", "post", "patch", "delete"]
 
     permission_classes = [IsAuthenticated, IsAdmin]
 
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
 
-    filterset_fields = ['level', 'semester', 'created_by', 'number_credits']
-    search_fields = ['name', 'program']
-    ordering = ['name', 'number_credits', 'semester', 'created_at', 'updated_at']
+    filterset_fields = ["level", "semester", "created_by", "number_credits"]
+    search_fields = ["name", "program"]
+    ordering = ["name", "number_credits", "semester", "created_at", "updated_at"]
 
     def create(self, request, *args, **kwargs):
         serializer = SubjectSerializer(data=request.data)
@@ -57,17 +55,17 @@ class SubjectViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['GET', 'POST', 'DELETE'])
+    @action(detail=True, methods=["GET", "POST", "DELETE"])
     def prerequisites(self, request, pk):
         subject = self.get_object()
 
         if request.method == "POST":
-            prerequisite_id = request.data.get('prerequisite')
+            prerequisite_id = request.data.get("prerequisite")
 
             if not isinstance(prerequisite_id, int) or prerequisite_id <= 0:
                 return Response(
                     {"error": "Prerequisite ID must be a positive integer."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             try:
@@ -75,26 +73,28 @@ class SubjectViewSet(viewsets.ModelViewSet):
             except Subject.DoesNotExist:
                 return Response(
                     {"error": "The specified prerequisite subject does not exist."},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             if subject.id == prerequisite_subject.id:
                 return Response(
                     {"error": "A subject cannot be a prerequisite of itself."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             subject.prerequisites.add(prerequisite_subject)
             subject.save()
-            return Response(SubjectSerializer(subject).data, status=status.HTTP_201_CREATED)
+            return Response(
+                SubjectSerializer(subject).data, status=status.HTTP_201_CREATED
+            )
 
         if request.method == "DELETE":
-            prerequisite_id = request.data.get('prerequisite')
+            prerequisite_id = request.data.get("prerequisite")
 
             if not isinstance(prerequisite_id, int) or prerequisite_id <= 0:
                 return Response(
                     {"error": "Prerequisite ID must be a positive integer."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             try:
@@ -102,28 +102,33 @@ class SubjectViewSet(viewsets.ModelViewSet):
             except Subject.DoesNotExist:
                 return Response(
                     {"error": "The specified prerequisite subject does not exist."},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             if not subject.prerequisites.filter(id=prerequisite_id).exists():
                 return Response(
-                    {"error": "The specified prerequisite is not associated with this subject."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {
+                        "error": "The specified prerequisite is not associated with this subject."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             subject.prerequisites.remove(prerequisite_subject)
             subject.save()
-            return Response(SubjectSerializer(subject).data, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                SubjectSerializer(subject).data, status=status.HTTP_204_NO_CONTENT
+            )
 
         if request.method == "GET":
             prerequisites = subject.prerequisites.all()
             return Response(SubjectSerializer(prerequisites, many=True).data)
-    @action(detail=True, methods=['GET', 'POST'], serializer_class=CourseSerializer)
+
+    @action(detail=True, methods=["GET", "POST"], serializer_class=CourseSerializer)
     def courses(self, request, pk):
         subject = self.get_object()
         data = request.data.copy()
-        data['subject'] = subject.id
-        data['created_by'] = request.user.id
+        data["subject"] = subject.id
+        data["created_by"] = request.user.id
 
         if request.method == "POST":
             serializer = CourseSerializer(data=data)
